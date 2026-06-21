@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Library Management System - Premium Visual Edition</title>
+    <style>
+        /* BASE DESIGN & RESET */
+        * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; }
+        body { background-color: #f8fafc; color: #1e293b; padding: 30px 15px; line-height: 1.5; }
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        /* HEADER SECTION */
+        header { 
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); 
+            color: white; 
+            padding: 40px 20px; 
+            text-align: center; 
+            border-radius: 20px; 
+            margin-bottom: 25px; 
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15);
+        }
+        header h1 { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.05em; margin-bottom: 8px; }
+        header p { color: #94a3b8; font-size: 1rem; }
+
+        /* STATUS BAR */
+        .nav-mock { 
+            display: flex; justify-content: space-between; align-items: center; 
+            margin-bottom: 25px; background: white; padding: 16px 24px; 
+            border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;
+        }
+        .nav-mock span { font-weight: 600; color: #334155; }
+        
+        /* CARD MATERIAL DESIGN */
+        .card { 
+            background: white; padding: 28px; border-radius: 16px; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 25px; border: 1px solid #e2e8f0;
+        }
+        h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 20px; color: #0f172a; letter-spacing: -0.03em; }
+        
+        /* FORMS & INPUTS */
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-size: 0.9rem; font-weight: 600; color: #475569; }
+        select, input[type="text"], input[type="email"] { 
+            width: 100%; padding: 12px 16px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.95rem;
+        }
+        
+        /* MODERN BUTTONS */
+        button { 
+            background: #4f46e5; color: white; border: none; padding: 10px 16px; border-radius: 8px; 
+            cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.2s ease;
+        }
+        button:hover { background: #4338ca; transform: translateY(-1px); }
+        button.secondary { background: #10b981; }
+        button.secondary:hover { background: #059669; }
+        button.info { background: #8b5cf6; }
+        button.info:hover { background: #7c3aed; }
+        button.danger { background: #ef4444; }
+        button.danger:hover { background: #dc2626; }
+        button.warning { background: #f59e0b; color: white; }
+        button.warning:hover { background: #d97706; }
+
+        /* TABLES DESIGN */
+        table { width: 100%; border-collapse: separate; border-spacing: 0; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0; }
+        th, td { padding: 14px 18px; text-align: left; font-size: 0.95rem; }
+        th { background-color: #f1f5f9; color: #475569; font-weight: 600; }
+        td { border-bottom: 1px solid #e2e8f0; background: #fff; }
+        
+        /* BADGES */
+        .badge { padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; display: inline-block; }
+        .badge-pending { background: #fef3c7; color: #d97706; }
+        .badge-active { background: #d1fae5; color: #065f46; }
+        .badge-admin { background: #ede9fe; color: #5b21b6; }
+        .badge-danger { background: #fee2e2; color: #991b1b; }
+        .badge-genre { background: #e2e8f0; color: #475569; font-size: 10px; margin-top: 5px; }
+
+        /* GRID & LAYOUT */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+        @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+        .hidden { display: none !important; }
+        .notice-box { padding: 16px; background: #eff6ff; border-left: 4px solid #3b82f6; margin-bottom: 20px; border-radius: 8px; color: #1e3a8a; }
+
+        /* ================= KARTU KATALOG BUKU MODERN ================= */
+        .books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; margin-top: 15px; }
+        .book-card { 
+            background: white; border: 1px solid #e2e8f0; border-radius: 14px; padding: 15px; 
+            display: flex; flex-direction: column; justify-content: space-between;
+            transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .book-card:hover { transform: translateY(-5px); box-shadow: 0 12px 20px -5px rgba(0,0,0,0.1); border-color: #cbd5e1; }
+        
+        /* MOCK COVER BUKU STYLISH */
+        .book-cover { 
+            width: 100%; height: 240px; border-radius: 10px; margin-bottom: 12px; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            padding: 15px; text-align: center; color: white; font-weight: bold; font-size: 1rem;
+            box-shadow: inset 0 -40px 60px rgba(0,0,0,0.5), 0 4px 8px rgba(0,0,0,0.1);
+            position: relative; overflow: hidden;
+        }
+        .book-cover::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 10px; height: 100%;
+            background: rgba(25px, 25px, 25px, 0.2); backdrop-filter: blur(1px); /* Efek lipatan pembatas buku */
+        }
+        .book-title { font-size: 1rem; font-weight: 700; color: #0f172a; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .book-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+        .book-actions button { width: 100%; }
+
+        /* MODAL POPUP */
+        .reader-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        .reader-content { background: white; width: 90%; max-width: 700px; height: 80vh; padding: 30px; border-radius: 20px; display: flex; flex-direction: column; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
+        .reader-body { flex-grow: 1; overflow-y: auto; margin: 20px 0; padding: 25px; background: #fcfbf7; border: 1px solid #e2dcc5; line-height: 1.8; font-size: 1.05rem; white-space: pre-line; border-radius: 12px; color: #2d3748; }
+        .reader-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>E-Library Management System</h1>
+        <p>Sirkulasi Interaktif Buku Digital dengan Fitur Preview Cover & Sistem Review</p>
+    </header>
+
+    <div class="nav-mock">
+        <div id="sessionStatus">
+            <span>Status Sesi: </span><span style="color: #ef4444; font-style: italic;">Sesi Kosong (Silakan Masuk)</span>
+        </div>
+        <div id="roleIndicator">
+            <span class="badge" style="background:#e2e8f0; color:#64748b;">GUEST</span>
+        </div>
+    </div>
+
+    <div id="panelAuth" class="card">
+        <h2>🔑 Pintu Masuk Sistem (Login / Registrasi)</h2>
+        <div class="notice-box">
+            📌 <b>Petunjuk Simulasi Akun:</b><br>
+            • <b>Admin</b>: Masukkan Email <b>admin@perpus.com</b><br>
+            • <b>Siswa</b>: Bebas masukkan nama & email lainnya (Contoh: budi@gmail.com) untuk mendaftar otomatis.
+        </div>
+        <div class="form-group">
+            <label>Nama Lengkap</label>
+            <input type="text" id="regNama" placeholder="Nama lengkap Anda">
+        </div>
+        <div class="form-group">
+            <label>Alamat Email</label>
+            <input type="email" id="regEmail" placeholder="admin@perpus.com atau email pribadi">
+        </div>
+        <button onclick="loginProses()" class="secondary" style="width: 100%; padding: 14px;">Masuk ke Dashboard</button>
+    </div>
+
+    <div id="profileContainer" class="card hidden">
+        <h2>👤 Sesi Akun Aktif</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+            <div>
+                <div class="user-logged-info">
+                    <span id="profileNama" style="font-size:1.2rem; font-weight:700;">Nama User</span>
+                    <span id="profileStatusBadge" class="badge">Role</span>
+                </div>
+            </div>
+            <button class="danger" onclick="logoutProses()">Keluar (Logout)</button>
+        </div>
+
+        <div id="verifForm" class="hidden" style="margin-top: 15px; background: #fffbeb; padding: 15px; border-radius: 12px; border: 1px solid #fef3c7;">
+            <p style="font-size: 0.95rem; margin-bottom: 10px; color: #92400e;">⚠️ Akun Anda belum aktif. Masukkan kode aktivasi mandiri <b>1234</b>:</p>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="otpInput" placeholder="KODE" style="width: 100px; text-align: center;">
+                <button onclick="verifikasiAkun()" class="secondary">Aktivasi</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="panelSiswa" class="hidden">
+        <div class="card" style="margin-bottom: 20px;">
+            <div class="form-group" style="margin: 0;">
+                <label style="font-size:1.1rem; margin-bottom:10px;">🔍 Pilih Kategori / Genre Buku:</label>
+                <select id="genreFilter" onchange="filterKatalogBuku()" style="max-width: 400px;">
+                    <option value="Semua">-- Tampilkan Semua Buku --</option>
+                    <option value="Action">Action (Aksi / Pertempuran)</option>
+                    <option value="Fantasi">Fantasi (Sihir / Petualangan)</option>
+                    <option value="Pendidikan">Pendidikan (IT & Komputer)</option>
+                </select>
+            </div>
+        </div>
+
+        <h2 style="margin-left: 5px; margin-bottom: 15px;">📖 Katalog Buku Utama Perpustakaan</h2>
+        <div id="katalogBukuGrid" class="books-grid"></div>
+
+        <div class="card" style="margin-top: 35px;">
+            <h2>📊 Status Pengajuan Peminjaman Anda</h2>
+            <table id="tabelBukuSiswa">
+                <thead>
+                    <tr>
+                        <th>Judul Buku</th>
+                        <th>Status Kelayakan Akses</th>
+                        <th>Aksi Pengembalian</th>
+                    </tr>
+                </thead>
+                <tbody id="listBukuSiswa"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="panelAdmin" class="hidden">
+        <div class="card">
+            <h2>🛡️ Manajemen Petugas: Verifikasi Akun Siswa</h2>
+            <table id="tabelVerifAkun">
+                <thead>
+                    <tr>
+                        <th>Nama Siswa</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Aksi Persetujuan</th>
+                    </tr>
+                </thead>
+                <tbody id="listVerifAkun"></tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>⚡ Loket Sirkulasi: Verifikasi Dokumen Peminjaman</h2>
+            <table id="tabelVerifTransaksi">
+                <thead>
+                    <tr>
+                        <th>Nama Pengaju</th>
+                        <th>Judul Koleksi</th>
+                        <th>Tipe</th>
+                        <th>Status</th>
+                        <th>Aksi Petugas</th>
+                    </tr>
+                </thead>
+                <tbody id="listVerifTransaksi"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="readerModal" class="reader-modal hidden">
+    <div class="reader-content">
+        <div class="reader-header">
+            <div>
+                <h2 id="modalBookTitle" style="margin:0; display:inline-block;">Judul Jendela</h2>
+                <span id="modalBookGenre" class="badge" style="background:#dee2e6; margin-left:10px;">Genre</span>
+            </div>
+            <button class="danger" onclick="closeReader()">Tutup Popup</button>
+        </div>
+        <div id="modalBookBody" class="reader-body"></div>
+        <div id="modalFooterNote" style="text-align: right; font-size: 11px; color: #94a3b8; font-weight: 500;">Sistem Keamanan Sandbox</div>
+    </div>
+</div>
+
+<script>
+    // DATABASE BUKU LENGKAP DENGAN COVER COLOR, SINOPSI (REVIEW), DAN ISI LENGKAP
+    const daftarBukuPilihan = {
+        "Jaringan Komputer Berbasis Cisco": {
+            genre: "Pendidikan",
+            color: "linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%)",
+            review: "Buku panduan praktis untuk administrator jaringan pemula. Membahas konfigurasi Router dan Switch Cisco dari nol menggunakan Command Line Interface (CLI) beserta studi kasus topologi dunia nyata.",
+            isi: `[BAB 1: Pengenalan Perangkat Cisco & Topologi]\n\nJaringan komputer adalah sistem yang terdiri dari beberapa komputer yang didesain untuk berbagi sumber daya, berkomunikasi, dan dapat mengakses informasi.\n\nPerangkat utama Cisco meliputi Router dan Switch. Untuk melakukan konfigurasi awal, kita menggunakan jalur Command Line Interface (CLI).\n\nPerintah Dasar Switch/Router Cisco:\nRouter> enable\nRouter# configure terminal\nRouter(config)# hostname R-Utama\nRouter(config)# interface gigabitEthernet 0/0`
+        },
+        "Pemrograman Web Dasar dengan Laravel": {
+            genre: "Pendidikan",
+            color: "linear-gradient(135deg, #7f1d1d 0%, #dc2626 100%)",
+            review: "Mengupas arsitektur Model-View-Controller (MVC) pada Framework Laravel. Sangat direkomendasikan untuk siswa SMK/mahasiswa yang ingin terjun menjadi Fullstack Web Developer.",
+            isi: `[BAB 1: Arsitektur MVC & Instalasi]\n\nLaravel adalah framework PHP bagi para pengrajin web (web artisans) yang menggunakan pola desain MVC (Model-View-Controller) untuk memisahkan logika bisnis, data, dan tampilan interface.\n\n* Model: Mengatur struktur data dan interaksi ke database (Eloquent ORM).\n* View: Menampilkan informasi ke pengguna menggunakan template engine Blade.\n* Controller: Jembatan yang memproses logika permintaan (request) pengguna.`
+        },
+        "Dasar-Dasar Desain Grafis & Multimedia": {
+            genre: "Pendidikan",
+            color: "linear-gradient(135deg, #065f46 0%, #0d9488 100%)",
+            review: "Membahas teori dasar komposisi seni visual digital, perbedaan esensial antara spektrum ruang warna RGB dan CMYK, serta implementasi pembuatan aset multimedia.",
+            isi: `[BAB 1: Teori Warna & Komposisi Visual]\n\nWarna merupakan elemen krusial dalam menyampaikan pesan visual. Secara digital, terdapat dua model warna utama yang wajib dipahami oleh desainer:\n\n1. RGB (Red, Green, Blue): Model warna aditif yang digunakan untuk layar digital (Monitor, HP, TV).\n\n2. CMYK (Cyan, Magenta, Yellow, Key/Black): Model warna subtraktif yang digunakan untuk kebutuhan industri percetakan fisik.`
+        },
+        "Operasi Garis Depan: Strike Force": {
+            genre: "Action",
+            color: "linear-gradient(135deg, #451a03 0%, #78350f 100%)",
+            review: "Novel fiksi aksi militer berkejaran dengan waktu. Mengikuti kisah taktis pasukan elite komando Alpha dalam operasi pembebasan sandera berisiko tinggi di wilayah perbatasan ekstrem.",
+            isi: `[BAB 1: Terobosan di Sektor Barat]\n\nSuara gemuruh helikopter Black Hawk membelah keheningan malam di atas langit perbatasan. Kapten Adrian mempererat genggaman pada senapan serbu miliknya. Indikator taktis di kacamata night-vision miliknya berkedip merah, menandakan area drop zone sudah dikepung musuh.\n\n"Tiga puluh detik lagi! Bersiap di pintu sampaian!" teriak sang pilot melalui radio interkom.`
+        },
+        "The Last Stand: Pertahanan Terakhir": {
+            genre: "Action",
+            color: "linear-gradient(135deg, #172554 0%, #1e40af 100%)",
+            review: "Kisah epik pertempuran bertahan sebuah kota dari gempuran divisi lapis baja. Menampilkan perjuangan emosional, kepemimpinan taktis, dan pengorbanan di garis pembatas pertempuran.",
+            isi: `[BAB 1: Runtuhnya Tembok Sektor 4]\n\nAmunisi tersisa setengah magasin. Sersan perkasa, Gani, menyeka darah yang mengalir dari pelipisnya. Di depannya, barisan kendaraan lapis baja musuh terus merangsek maju menghancurkan barikade beton yang susah payah dibangun.\n\n"Jangan mundur! Jika sektor ini runtuh, kota akan jatuh!" teriaknya membakar semangat prajurit yang tersisa.`
+        },
+        "Bangkitnya Kekuatan Sihir Kuno": {
+            genre: "Fantasi",
+            color: "linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%)",
+            review: "Kisah petualangan magis berlatar benua fiksi Elenor. Ketika energi Mana kuno yang tersegel selama seribu tahun mendadak terlepas dan memilih seorang pemuda desa biasa.",
+            isi: `[BAB 1: Segel Mana yang Retak]\n\nSelama seribu tahun, benua Elenor hidup damai tanpa sihir. Semua orang percaya bahwa energi 'Mana' hanyalah mitos dongeng pengantar tidur. Namun malam ini, di dalam goa terdalam bukit terlarang, sebuah batu kristal hitam raksasa mendadak retak, memancarkan pendaran cahaya ungu yang membelah langit.\n\nElian, seorang pemuda desa biasa merasakan dadanya terbakar hebat.`
+        },
+        "Gerbang Dimensi: Dunia Setelah Runtuh": {
+            genre: "Fantasi",
+            color: "linear-gradient(135deg, #031525 0%, #0369a1 100%)",
+            review: "Eksplorasi dunia distopia pasca-apokalips di mana daratan terpecah menjadi pulau-pulau angkasa terapung yang dihuni oleh entitas bioluminesens cerdas misterius.",
+            isi: `[BAB 1: Menembus Tirai Nebula]\n\nDunia lama telah hancur akibat benturan komet, menyisakan pulau-pulau tanah terapung di angkasa yang terhubung oleh jembatan energi astral. Berprofesi sebagai 'Dimensional Explorer', Kira melompat masuk ke dalam pusaran portal energi berwarna biru safir.`
+        }
+    };
+
+    let database = { 
+        users: [{ nama: "Petugas Perpustakaan", email: "admin@perpus.com", role: "Admin", status: "Aktif" }], 
+        transaksi: [] 
+    };
+    let currentUser = null;
+
+    window.onload = function() { filterKatalogBuku(); }
+
+    // FUNGSI UTAMA GENERATE KATALOG BUKU MENJADI GRID COVER VISUAL
+    function filterKatalogBuku() {
+        const filterValue = document.getElementById('genreFilter').value;
+        const gridContainer = document.getElementById('katalogBukuGrid');
+        gridContainer.innerHTML = '';
+
+        for (let judul in daftarBukuPilihan) {
+            const dataBuku = daftarBukuPilihan[judul];
+            
+            if (filterValue === "Semua" || dataBuku.genre === filterValue) {
+                // Cek status kepemilikan buku untuk user aktif (apakah sudah disetujui pinjam)
+                let statusSewa = "";
+                if(currentUser) {
+                    let trxMenyewa = database.transaksi.find(t => t.nama === currentUser.nama && t.buku === judul);
+                    if(trxMenyewa) statusSewa = trxMenyewa.status;
+                }
+
+                // Pengkondisian tombol "Buka Buku" secara real-time
+                let tombolBukaBuku = "";
+                if (statusSewa === "Sedang Dipinjam (Akses Buku Terbuka)") {
+                    tombolBukaBuku = `<button class="info" onclick="bacaIsiBuku('${judul}')">🔓 Buka & Baca Buku</button>`;
+                } else {
+                    tombolBukaBuku = `<button class="warning" onclick="ajukanPinjamBuku('${judul}')">📥 Ajukan Pinjam</button>`;
+                }
+
+                // Render element Card Komponen
+                gridContainer.innerHTML += `
+                    <div class="book-card">
+                        <div>
+                            <div class="book-cover" style="background: ${dataBuku.color};">
+                                <div>📘</div>
+                                <div style="margin-top:10px; font-size:0.9rem;">${judul}</div>
+                            </div>
+                            <div class="book-title">${judul}</div>
+                            <span class="badge badge-genre">${dataBuku.genre}</span>
+                        </div>
+                        <div class="book-actions">
+                            <button onclick="reviewBuku('${judul}')" style="background:#64748b;">🔍 Review Buku</button>
+                            ${tombolBukaBuku}
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        if(gridContainer.innerHTML === '') {
+            gridContainer.innerHTML = `<p style="color:#94a3b8; grid-column: 1/-1; text-align:center; padding:30px;">Tidak ada koleksi buku yang tersedia di kategori ini.</p>`;
+        }
+    }
+
+    // REVIEW BUKU (PREVIEW SINOPSIS)
+    function reviewBuku(judul) {
+        document.getElementById('modalBookTitle').innerText = "Review Sinopsis: " + judul;
+        document.getElementById('modalBookGenre').innerText = daftarBukuPilihan[judul].genre;
+        document.getElementById('modalBookBody').innerText = daftarBukuPilihan[judul].review;
+        document.getElementById('modalFooterNote').innerText = "Mode Pratinjau Katalog Terbuka";
+        document.getElementById('readerModal').classList.remove('hidden');
+    }
+
+    // BUKA & BACA ISI BUKU (SANDBOX MODE)
+    function bacaIsiBuku(judul) {
+        document.getElementById('modalBookTitle').innerText = "Membaca: " + judul;
+        document.getElementById('modalBookGenre').innerText = daftarBukuPilihan[judul].genre;
+        document.getElementById('modalBookBody').innerText = daftarBukuPilihan[judul].isi;
+        document.getElementById('modalFooterNote').innerText = "Konten Terproteksi Pembaca Digital Terverifikasi";
+        document.getElementById('readerModal').classList.remove('hidden');
+    }
+
+    function closeReader() { document.getElementById('readerModal').classList.add('hidden'); }
+
+    // ALUR PROSES PEMINJAMAN LANGSUNG DARI TOMBOL COVER
+    function ajukanPinjamBuku(judulBuku) {
+        if(!currentUser) return alert('Silakan login terlebih dahulu untuk mengajukan peminjaman buku!');
+        if(currentUser.status !== 'Aktif') return alert('Akses Ditolak! Akun Siswa Anda wajib aktif/terverifikasi OTP 1234.');
+
+        // Proteksi double-borrowing
+        let cekAda = database.transaksi.find(t => t.nama === currentUser.nama && t.buku === judulBuku && !t.status.includes('Selesai'));
+        if(cekAda) return alert('Anda sudah mengajukan sirkulasi untuk buku ini sebelumnya!');
+
+        database.transaksi.push({
+            idTrx: "TRX-" + Math.floor(1000 + Math.random() * 9000),
+            nama: currentUser.nama,
+            buku: judulBuku,
+            tipe: 'Peminjaman',
+            status: 'Menunggu Verifikasi Admin'
+        });
+        
+        alert(`Formulir permintaan pinjam buku "${judulBuku}" berhasil dikirim ke Admin!`);
+        filterKatalogBuku();
+        renderSiswaPanel();
+    }
+
+    // AUTH LOGIN & REGISTER
+    function loginProses() {
+        const nama = document.getElementById('regNama').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        if(!email) return alert('Alamat email wajib diisi!');
+
+        let userTerdaftar = database.users.find(u => u.email === email);
+        if(!userTerdaftar) {
+            if(email === 'admin@perpus.com') {
+                userTerdaftar = { nama: "Petugas Perpustakaan", email: "admin@perpus.com", role: "Admin", status: "Aktif" };
+            } else {
+                if(!nama) return alert('Mohon masukkan nama Anda!');
+                userTerdaftar = { nama: nama, email: email, role: "Siswa", status: "Belum Terverifikasi" };
+            }
+            database.users.push(userTerdaftar);
+        }
+
+        currentUser = userTerdaftar;
+        document.getElementById('panelAuth').classList.add('hidden');
+        document.getElementById('profileContainer').classList.remove('hidden');
+
+        if(currentUser.role === "Admin") {
+            document.getElementById('panelAdmin').classList.remove('hidden');
+            document.getElementById('panelSiswa').classList.add('hidden');
+            renderAdminPanel();
+        } else {
+            document.getElementById('panelSiswa').classList.remove('hidden');
+            document.getElementById('panelAdmin').classList.add('hidden');
+            if(currentUser.status === "Belum Terverifikasi") {
+                document.getElementById('verifForm').classList.remove('hidden');
+            }
+            renderSiswaPanel();
+        }
+        updateTopNavigationBar();
+        filterKatalogBuku();
+    }
+
+    function logoutProses() {
+        if(confirm('Apakah Anda yakin ingin keluar?')) {
+            currentUser = null;
+            document.getElementById('regNama').value = '';
+            document.getElementById('regEmail').value = '';
+            document.getElementById('otpInput').value = '';
+            document.getElementById('panelAuth').classList.remove('hidden');
+            document.getElementById('profileContainer').classList.add('hidden');
+            document.getElementById('panelSiswa').classList.add('hidden');
+            document.getElementById('panelAdmin').classList.add('hidden');
+            document.getElementById('verifForm').classList.add('hidden');
+            updateTopNavigationBar();
+            filterKatalogBuku();
+        }
+    }
+
+    function updateTopNavigationBar() {
+        const sessionDiv = document.getElementById('sessionStatus');
+        const roleInd = document.getElementById('roleIndicator');
+
+        if(currentUser) {
+            sessionDiv.innerHTML = `<span>Status Sesi: </span><span style="color: #10b981; font-weight:600;">${currentUser.nama}</span>`;
+            roleInd.innerHTML = currentUser.role === 'Admin' ? `<span class="badge badge-admin">ADMIN PERPUS</span>` : `<span class="badge badge-active">SISWA</span>`;
+            document.getElementById('profileNama').innerText = currentUser.nama;
+            const badge = document.getElementById('profileStatusBadge');
+            badge.innerText = currentUser.role + " | " + currentUser.status;
+            badge.className = `badge ${currentUser.role === 'Admin' ? 'badge-admin' : (currentUser.status === 'Aktif' ? 'badge-active' : 'badge-pending')}`;
+        } else {
+            sessionDiv.innerHTML = `<span>Status Sesi: </span><span style="color: #ef4444; font-style: italic;">Sesi Kosong (Silakan Masuk)</span>`;
+            roleInd.innerHTML = `<span class="badge" style="background:#e2e8f0; color:#64748b;">GUEST</span>`;
+        }
+    }
+
+    function verifikasiAkun() {
+        if(document.getElementById('otpInput').value === '1234') {
+            currentUser.status = 'Aktif';
+            alert('Akun Berhasil Terverifikasi!');
+            document.getElementById('verifForm').classList.add('hidden');
+            updateTopNavigationBar();
+            filterKatalogBuku();
+            renderSiswaPanel();
+        } else { alert('Kode OTP salah! Gunakan kode 1234.'); }
+    }
+
+    function adminVerifikasiAkun(index) {
+        database.users[index].status = 'Aktif';
+        renderAdminPanel();
+    }
+
+    function ajukanKembali(indexTrx) {
+        database.transaksi[indexTrx].tipe = 'Pengembalian';
+        database.transaksi[indexTrx].status = 'Menunggu Verifikasi Admin';
+        renderSiswaPanel();
+    }
+
+    function adminVerifikasiTransaksi(index, aksi) {
+        let trx = database.transaksi[index];
+        if(aksi === 'Setuju') {
+            trx.status = (trx.tipe === 'Peminjaman') ? 'Sedang Dipinjam (Akses Buku Terbuka)' : 'Selesai Dikembalikan';
+        } else {
+            trx.status = 'Ditolak oleh Admin';
+        }
+        renderAdminPanel();
+        if(currentUser && currentUser.role === 'Siswa') renderSiswaPanel();
+    }
+
+    function renderSiswaPanel() {
+        const tbody = document.getElementById('listBukuSiswa');
+        tbody.innerHTML = '';
+        const userTrx = database.transaksi.filter(t => t.nama === currentUser.nama);
+        
+        if(userTrx.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: #94a3b8; font-style: italic;">Belum mengajukan peminjaman buku apapun.</td></tr>`;
+            return;
+        }
+
+        userTrx.forEach((trx) => {
+            let indexDb = database.transaksi.indexOf(trx);
+            let tombolAksi = trx.status.includes('Terbuka') ? `<button class="danger" onclick="ajukanKembali(${indexDb})">Kembalikan Buku</button>` : `<span style="color:#94a3b8; font-size:13px;">Menunggu Konfirmasi Admin</span>`;
+            let badgeClass = trx.status.includes('Terbuka') ? 'badge-active' : (trx.status.includes('Ditolak') ? 'badge-danger' : 'badge-pending');
+            
+            tbody.innerHTML += `<tr><td><b>${trx.buku}</b></td><td><span class="badge ${badgeClass}">${trx.status}</span></td><td>${tombolAksi}</td></tr>`;
+        });
+    }
+
+    function renderAdminPanel() {
+        const tbodyAkun = document.getElementById('listVerifAkun');
+        tbodyAkun.innerHTML = '';
+        database.users.forEach((user, idx) => {
+            if(user.role !== 'Admin') {
+                let aksi = user.status === 'Belum Terverifikasi' ? `<button class="secondary" onclick="adminVerifikasiAkun(${idx})">Setujui Akun</button>` : `✅ Aktif`;
+                tbodyAkun.innerHTML += `<tr><td>${user.nama}</td><td>${user.email}</td><td><span class="badge ${user.status === 'Aktif' ? 'badge-active' : 'badge-pending'}">${user.status}</span></td><td>${aksi}</td></tr>`;
+            }
+        });
+
+        const tbodyTrx = document.getElementById('listVerifTransaksi');
+        tbodyTrx.innerHTML = '';
+        database.transaksi.forEach((trx, idx) => {
+            if(trx.status === 'Menunggu Verifikasi Admin') {
+                tbodyTrx.innerHTML += `<tr><td><b>${trx.nama}</b></td><td>${trx.buku}</td><td><span style="color:${trx.tipe === 'Peminjaman' ? '#4f46e5':'#ef4444'}; font-weight:600;">${trx.tipe}</span></td><td><span class="badge badge-pending">${trx.status}</span></td><td><button class="secondary" onclick="adminVerifikasiTransaksi(${idx}, 'Setuju')">Setujui</button> <button class="danger" onclick="adminVerifikasiTransaksi(${idx}, 'Tolak')">Tolak</button></td></tr>`;
+            }
+        });
+    }
+</script>
+</body>
+</html>
